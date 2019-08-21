@@ -8,9 +8,8 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 
-/* MARK NAME Seu Nome Aqui */
-/* MARK NAME Nome de Outro Integrante Aqui */
-/* MARK NAME E Etc */
+/* MARK NAME Frederico Ribeiro Queiroz */
+/* MARK NAME Icaro Kened Torres Neto */
 
 /****************************************************************
  * Shell xv6 simplificado
@@ -128,14 +127,14 @@ main(void)
      * Insira sua resposta no código e modifique o fprintf abaixo
      * para reportar o erro corretamente.
      * RESPOSTA: 
-     * O if abaixo verifica se o comando 'cd' seguido de um espaco ' ' foi digitado (inserido no buffer).
-     * Se sim, ele zera a ultima posicao do buffer.
+     * O if abaixo verifica se o comando 'cd' seguido de um espaco ' ' foi recebido como entrada (inserido no buffer).
+     * Se sim, ele atribúi zero a última posição do buffer.
      * O if de dentro verifica se 
     */ 
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       buf[strlen(buf)-1] = 0;
-      if(chdir(buf+3) < 0)
-        fprintf(stderr, "reporte erro\n");
+      if(chdir(buf+3) < 0) // Verifica se houve erro na execução do chdir
+      fprintf(stderr, "reporte erro\n");
       continue;
     }
     /* MARK END task1 */
@@ -261,7 +260,7 @@ struct cmd *parseline(char**, char*);
 struct cmd *parsepipe(char**, char*);
 struct cmd *parseexec(char**, char*);
 
-/* Copiar os caracteres no buffer de entrada, comeando de s ate es.
+/* Copiar os caracteres no buffer de entrada, começando de s ate es.
  * Colocar terminador zero no final para obter um string valido. */
 char 
 *mkcopy(char *s, char *es)
