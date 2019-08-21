@@ -126,7 +126,12 @@ main(void)
     /* MARK START task1 */
     /* TAREFA1: O que faz o if abaixo e por que ele é necessário?
      * Insira sua resposta no código e modifique o fprintf abaixo
-     * para reportar o erro corretamente. */
+     * para reportar o erro corretamente.
+     * RESPOSTA: 
+     * O if abaixo verifica se o comando 'cd' seguido de um espaco ' ' foi digitado (inserido no buffer).
+     * Se sim, ele zera a ultima posicao do buffer.
+     * O if de dentro verifica se 
+    */ 
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       buf[strlen(buf)-1] = 0;
       if(chdir(buf+3) < 0)
