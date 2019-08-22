@@ -76,7 +76,12 @@ runcmd(struct cmd *cmd)
     /* MARK START task2
      * TAREFA2: Implemente codigo abaixo para executar
      * comandos simples. */
-    fprintf(stderr, "exec nao implementado\n");
+    
+	/* O execvp() procura pela localização do comando "ecmd->argv[0]" 
+	 * entre os diretórios especificados na variável de ambiente PATH,
+	 * e passa os argumentos contidos no array "ecmd->argv". */
+	if(execvp(ecmd->argv[0], ecmd->argv) < 0)
+		fprintf(stderr, "-myshell: %s: %s\n", ecmd->argv[0], strerror(errno));
     /* MARK END task2 */
     break;
 
@@ -108,8 +113,8 @@ getcmd(char *buf, int nbuf)
 {
   if (isatty(fileno(stdin)))
     fprintf(stdout, "$ ");
-  memset(buf, 0, nbuf);
-  fgets(buf, nbuf, stdin);
+  memset(buf, 0, nbuf); // zera o buffer
+  fgets(buf, nbuf, stdin); // le linha do stdin e guarda no buffer
   if(buf[0] == 0) // EOF
     return -1;
   return 0;
@@ -129,34 +134,34 @@ main(void)
      * para reportar o erro corretamente.
      * 
      * RESPOSTA: 
-     * O if abaixo verifica se o comando 'cd' seguido de um espaco ' ' foi recebido como entrada no buffer.
+     * O if abaixo verifica se o comando 'cd' seguido de um espaço ' ' foi recebido como entrada no buffer.
      * O comando cd (change directory) tem como finalidade mudar o diretorio atual de trabalho.
      * 
      * O if eh necessario para se caso o comando digitado seja o cd, o programa
-     * altere o diretorio de trabalho do processo atual antes de duplica-lo com a funcao fork1.
-     * 
-     * Obs: O chdir altera apenas o diretorio de trabalho do processo, e nao o diretorio de trabalho atual do shell.
+     * apenas altere o diretorio de trabalho do processo atual e não crie outro processo através do fork1().
     */ 
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       buf[strlen(buf)-1] = 0; // Atribui zero a ultima posicao do buffer
-      /*
-       * Esse if verifica o retorno da funcao chdir(),
+      
+      /* Esse if interno verifica o retorno da funcao chdir(),
        * que recebe como parametro o caminho que foi inserido junto com o comando cd
        * A funcao chdir() retora:
        *    0 em caso de sucesso 
-       *   -1 em caso de de erro (define errno de acordo com o erro)
+       *   -1 em caso de de erro (define errno de acordo com o tipo de erro)
+	   *
+	   * Obs: O chdir altera apenas o diretorio de trabalho do processo, e nao o diretorio de trabalho atual do shell.
       */
-      if(chdir(buf+3) < 0) // Verifica o retorno da funcao chdir -> explicar retornos
-      //fprintf(stderr, "reporte erro\n");
-      // para reportar o erro corretamente podemos usar a funcao perror ou a funcao strerror
-      fprintf(stderr, "cd: %s: %s\n", buf+3, strerror(errno));
+      if(chdir(buf+3) < 0)
+		fprintf(stderr, "-myshell: cd: %s: %s\n", buf+3, strerror(errno));
       continue;
     }
     /* MARK END task1 */
-
-    if(fork1() == 0)
-      runcmd(parsecmd(buf));
-    wait(&r);
+	//fprintf(stdout, "passei do continue()\n");
+    if(fork1() == 0){ // pid == 0  --> Processo "filho"
+	  //fprintf(stdout, "Entrei dentro do fork1(): Processo filho\n");
+      runcmd(parsecmd(buf)); //Executa comando
+	}
+    wait(&r); //processo "pai" esperando processo "filho" terminar
   }
   exit(0);
 }
@@ -294,7 +299,7 @@ parsecmd(char *s)
   char *es;
   struct cmd *cmd;
 
-  es = s + strlen(s);
+  es = s + strlen(s); //copia s para es
   cmd = parseline(&s, es);
   peek(&s, es, "");
   if(s != es){
