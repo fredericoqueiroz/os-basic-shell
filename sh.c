@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <errno.h>
 
 /* MARK NAME Frederico Ribeiro Queiroz */
 /* MARK NAME Icaro Kened Torres Neto */
@@ -31,7 +32,7 @@ struct cmd {
 
 struct execcmd {
   int type;              // ' '
-  char *argv[MAXARGS];   // argumentos do comando a ser exec'utado
+  char *argv[MAXARGS];   // argumentos do comando a ser executado
 };
 
 struct redircmd {
@@ -126,15 +127,29 @@ main(void)
     /* TAREFA1: O que faz o if abaixo e por que ele é necessário?
      * Insira sua resposta no código e modifique o fprintf abaixo
      * para reportar o erro corretamente.
+     * 
      * RESPOSTA: 
-     * O if abaixo verifica se o comando 'cd' seguido de um espaco ' ' foi recebido como entrada (inserido no buffer).
-     * Se sim, ele atribúi zero a última posição do buffer.
-     * O if de dentro verifica se 
+     * O if abaixo verifica se o comando 'cd' seguido de um espaco ' ' foi recebido como entrada no buffer.
+     * O comando cd (change directory) tem como finalidade mudar o diretorio atual de trabalho.
+     * 
+     * O if eh necessario para se caso o comando digitado seja o cd, o programa
+     * altere o diretorio de trabalho do processo atual antes de duplica-lo com a funcao fork1.
+     * 
+     * Obs: O chdir altera apenas o diretorio de trabalho do processo, e nao o diretorio de trabalho atual do shell.
     */ 
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
-      buf[strlen(buf)-1] = 0;
-      if(chdir(buf+3) < 0) // Verifica se houve erro na execução do chdir
-      fprintf(stderr, "reporte erro\n");
+      buf[strlen(buf)-1] = 0; // Atribui zero a ultima posicao do buffer
+      /*
+       * Esse if verifica o retorno da funcao chdir(),
+       * que recebe como parametro o caminho que foi inserido junto com o comando cd
+       * A funcao chdir() retora:
+       *    0 em caso de sucesso 
+       *   -1 em caso de de erro (define errno de acordo com o erro)
+      */
+      if(chdir(buf+3) < 0) // Verifica o retorno da funcao chdir -> explicar retornos
+      //fprintf(stderr, "reporte erro\n");
+      // para reportar o erro corretamente podemos usar a funcao perror ou a funcao strerror
+      fprintf(stderr, "cd: %s: %s\n", buf+3, strerror(errno));
       continue;
     }
     /* MARK END task1 */
