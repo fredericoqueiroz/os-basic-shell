@@ -77,11 +77,11 @@ runcmd(struct cmd *cmd)
      * TAREFA2: Implemente codigo abaixo para executar
      * comandos simples. */
     
-	/* O execvp() procura pela localização do comando "ecmd->argv[0]" 
-	 * entre os diretórios especificados na variável de ambiente PATH,
-	 * e passa os argumentos contidos no array "ecmd->argv". */
-	if(execvp(ecmd->argv[0], ecmd->argv) < 0)
-		fprintf(stderr, "-myshell: %s: %s\n", ecmd->argv[0], strerror(errno));
+    /* O execvp() procura pela localização do comando "ecmd->argv[0]" 
+    * entre os diretórios especificados na variável de ambiente PATH,
+    * e passa os argumentos contidos no array "ecmd->argv". */
+    if(execvp(ecmd->argv[0], ecmd->argv) < 0)
+      fprintf(stderr, "-myshell: %s: %s\n", ecmd->argv[0], strerror(errno));
     /* MARK END task2 */
     break;
 
@@ -91,7 +91,11 @@ runcmd(struct cmd *cmd)
     /* MARK START task3
      * TAREFA3: Implemente codigo abaixo para executar
      * comando com redirecionamento. */
-    fprintf(stderr, "redir nao implementado\n");
+    rcmd->fd = -open(rcmd->file, rcmd->mode);
+    if(rcmd->type == '>')
+      dup2(rcmd->fd, STDOUT_FILENO);
+    else
+      dup2(rcmd->fd, STDIN_FILENO);
     /* MARK END task3 */
     runcmd(rcmd->cmd);
     break;
@@ -101,6 +105,30 @@ runcmd(struct cmd *cmd)
     /* MARK START task4
      * TAREFA4: Implemente codigo abaixo para executar
      * comando com pipes. */
+    
+    /* 
+    //r = pipe(p);
+    if(pipe(p) < 0){
+      perror("pipe");
+      exit(0);
+    }
+    if(fork1() == 0){
+      /* Processo filho 
+      fprintf(stdout, "Entrou no filho\n");
+      dup2(p[0], STDIN_FILENO);
+      //execvp(ecmd->argv[0], ecmd->argv);
+      //runcmd(pcmd->right);
+    }
+    else{
+      /* Pocesso pai 
+      fprintf(stdout, "Entrou no pai\n");
+      dup2(p[1], STDOUT_FILENO);
+      //execvp(ecmd->argv[0], ecmd->argv);
+      //execvp(pcmd->left, pcmd->left);
+      //runcmd(pcmd->left);
+    } 
+    */
+    
     fprintf(stderr, "pipe nao implementado\n");
     /* MARK END task4 */
     break;
@@ -152,7 +180,7 @@ main(void)
 	   * Obs: O chdir altera apenas o diretorio de trabalho do processo, e nao o diretorio de trabalho atual do shell.
       */
       if(chdir(buf+3) < 0)
-		fprintf(stderr, "-myshell: cd: %s: %s\n", buf+3, strerror(errno));
+		  fprintf(stderr, "-myshell: cd: %s: %s\n", buf+3, strerror(errno));
       continue;
     }
     /* MARK END task1 */
