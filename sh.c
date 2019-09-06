@@ -91,11 +91,11 @@ runcmd(struct cmd *cmd)
     /* MARK START task3
      * TAREFA3: Implemente codigo abaixo para executar
      * comando com redirecionamento. */
-    rcmd->fd = -open(rcmd->file, rcmd->mode);
-    if(rcmd->type == '>')
-      dup2(rcmd->fd, STDOUT_FILENO);
+    rcmd->fd = open(rcmd->file,rcmd->mode);
+    if(cmd->type == '>')
+      dup2(rcmd->fd, 1); //STDIN_FILENO
     else
-      dup2(rcmd->fd, STDIN_FILENO);
+      dup2(rcmd->fd, 0); //STDOUT_FILENO
     /* MARK END task3 */
     runcmd(rcmd->cmd);
     break;
@@ -105,29 +105,27 @@ runcmd(struct cmd *cmd)
     /* MARK START task4
      * TAREFA4: Implemente codigo abaixo para executar
      * comando com pipes. */
-    
-    /* 
-    //r = pipe(p);
+    r = pipe(p);
     if(pipe(p) < 0){
       perror("pipe");
       exit(0);
     }
-    if(fork1() == 0){
-      /* Processo filho 
-      fprintf(stdout, "Entrou no filho\n");
-      dup2(p[0], STDIN_FILENO);
+    if(fork1() > 0){
+      /* Processo pai */
+      fprintf(stdout, "Entrou no pai\n");
+      dup2(p[0], 1);
       //execvp(ecmd->argv[0], ecmd->argv);
-      //runcmd(pcmd->right);
+      runcmd(pcmd->left);
     }
     else{
-      /* Pocesso pai 
-      fprintf(stdout, "Entrou no pai\n");
-      dup2(p[1], STDOUT_FILENO);
+      /* Pocesso filho */
+      fprintf(stdout, "Entrou no filho\n");
+      dup2(p[1], 0);
       //execvp(ecmd->argv[0], ecmd->argv);
       //execvp(pcmd->left, pcmd->left);
-      //runcmd(pcmd->left);
+      runcmd(pcmd->right);
     } 
-    */
+    
     
     fprintf(stderr, "pipe nao implementado\n");
     /* MARK END task4 */
