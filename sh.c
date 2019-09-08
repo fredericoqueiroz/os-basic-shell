@@ -91,11 +91,11 @@ runcmd(struct cmd *cmd)
     /* MARK START task3
      * TAREFA3: Implemente codigo abaixo para executar
      * comando com redirecionamento. */
-    rcmd->fd = open(rcmd->file,rcmd->mode);
+    rcmd->fd = open(rcmd->file,rcmd->mode, 0775);
     if(cmd->type == '>')
-      dup2(rcmd->fd, 1); //STDIN_FILENO
+      dup2(rcmd->fd, 1); //STDOUT_FILENO
     else
-      dup2(rcmd->fd, 0); //STDOUT_FILENO
+      dup2(rcmd->fd, 0); //STDIN_FILENO
     /* MARK END task3 */
     runcmd(rcmd->cmd);
     break;
@@ -106,28 +106,27 @@ runcmd(struct cmd *cmd)
      * TAREFA4: Implemente codigo abaixo para executar
      * comando com pipes. */
     r = pipe(p);
-    if(pipe(p) < 0){
+    if(r < 0){
       perror("pipe");
       exit(0);
     }
     if(fork1() > 0){
-      /* Processo pai */
-      fprintf(stdout, "Entrou no pai\n");
-      dup2(p[0], 1);
-      //execvp(ecmd->argv[0], ecmd->argv);
+      /* Processo PAI */
+      //fprintf(stdout, "Entrou no PAI\n");
+      // p[0] -> reading   |   p[1] -> writing
+      close(p[0]); 
+      dup2(p[1], 1);
       runcmd(pcmd->left);
+      //close(p[1]);
     }
     else{
-      /* Pocesso filho */
-      fprintf(stdout, "Entrou no filho\n");
-      dup2(p[1], 0);
-      //execvp(ecmd->argv[0], ecmd->argv);
-      //execvp(pcmd->left, pcmd->left);
+      /* Pocesso FILHO */
+      //fprintf(stdout, "Entrou no FILHO\n");
+      close(p[1]);
+      dup2(p[0], 0);
       runcmd(pcmd->right);
+      //close(p[0]);
     } 
-    
-    
-    fprintf(stderr, "pipe nao implementado\n");
     /* MARK END task4 */
     break;
   }    
@@ -174,20 +173,18 @@ main(void)
        * A funcao chdir() retora:
        *    0 em caso de sucesso 
        *   -1 em caso de de erro (define errno de acordo com o tipo de erro)
-	   *
-	   * Obs: O chdir altera apenas o diretorio de trabalho do processo, e nao o diretorio de trabalho atual do shell.
+	     *
+	     * Obs: O chdir altera apenas o diretorio de trabalho do processo, e nao o diretorio de trabalho atual do shell.
       */
       if(chdir(buf+3) < 0)
 		  fprintf(stderr, "-myshell: cd: %s: %s\n", buf+3, strerror(errno));
       continue;
     }
     /* MARK END task1 */
-	//fprintf(stdout, "passei do continue()\n");
     if(fork1() == 0){ // pid == 0  --> Processo "filho"
-	  //fprintf(stdout, "Entrei dentro do fork1(): Processo filho\n");
-      runcmd(parsecmd(buf)); //Executa comando
+      runcmd(parsecmd(buf));
 	}
-    wait(&r); //processo "pai" esperando processo "filho" terminar
+    wait(&r);
   }
   exit(0);
 }
