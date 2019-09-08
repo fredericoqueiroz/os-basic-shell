@@ -110,9 +110,9 @@ runcmd(struct cmd *cmd)
       perror("pipe");
       exit(0);
     }
-    if(fork1() > 0){
-      /* Processo PAI */
-      //fprintf(stdout, "Entrou no PAI\n");
+    if(fork1() == 0){
+      /* Processo FILHO */
+      //fprintf(stdout, "Entrou no FILHO\n");
       // p[0] -> reading   |   p[1] -> writing
       close(p[0]); 
       dup2(p[1], 1);
@@ -120,8 +120,8 @@ runcmd(struct cmd *cmd)
       //close(p[1]);
     }
     else{
-      /* Pocesso FILHO */
-      //fprintf(stdout, "Entrou no FILHO\n");
+      /* Pocesso PAI */
+      //fprintf(stdout, "Entrou no PAI\n");
       close(p[1]);
       dup2(p[0], 0);
       runcmd(pcmd->right);
