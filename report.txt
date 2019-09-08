@@ -51,11 +51,11 @@ A funcao chdir() retora:
     0 em caso de sucesso 
     -1 em caso de de erro (define errno de acordo com o tipo de erro)
 
-A função da biblioteca C char * strerror (int errnum) procura em uma matriz interna o número do erro errnum e retorna um ponteiro para uma sequência de mensagens de erro.
+A função strerror(int errno) procura em uma matriz interna o número do erro errno e retorna um ponteiro para uma sequência de mensagens de erro.
 
 Para reportar o erro buscou-se utilizar uma estrutura de mensagem semelhante ao do interpretador Bash linux.
 A mensagem a ser exibida tem a seguinte estrutura:
-    myshell: cd: <caminho do diretório> <descrição do erro>
+    myshell: cd: <caminho do diretório> <mensagem de erro>
 
 
 /*Task2*/
