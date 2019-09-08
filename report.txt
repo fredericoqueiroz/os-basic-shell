@@ -13,15 +13,49 @@ Preencha as linhas abaixo com o nome e o e-mail dos integrantes do
 grupo.  Substitua XX pela contribuição de cada membro do grupo no
 desenvolvimento do trabalho.
 
-Nome <email@domain.br> XX%
-Nome <email@domain.br> XX%
-Nome <email@domain.br> XX%
+Frederico Ribeiro Queiroz <fredqueirozbh@gmail.com> 50%
+Icaro Kened Torres Neto <torres.icaro@hotmail.com> 50%
 
 3. Referências bibliográficas
 
 Adicione aqui as referências bibliográficas.
 
+/*Task1*/
+https://www.geeksforgeeks.org/chdir-in-c-language-with-examples/
+https://linux.die.net/man/3/chdir
+https://www.tutorialspoint.com/c_standard_library/c_function_strerror.htm
+
+/*Task2*/
+https://www.geeksforgeeks.org/exec-family-of-functions-in-c/
+https://linux.die.net/man/3/exec
+
+/*Task3*/
+https://www.geeksforgeeks.org/input-output-system-calls-c-create-open-close-read-write/
+https://linux.die.net/man/3/open
+https://www.geeksforgeeks.org/dup-dup2-linux-system-call/
+https://linux.die.net/man/2/dup2
+https://www.quora.com/What-is-the-file-descriptor-What-are-STDIN_FILENO-STDOUT_FILENO-and-STDERR_FILENO
+
+/*Task4*/
+https://www.geeksforgeeks.org/fork-system-call/
+https://www.geeksforgeeks.org/c-program-demonstrate-fork-and-pipe/
+https://linux.die.net/man/2/pipe
+
 4. Estruturas de dados
 
 Descreva e justifique as estruturas de dados e algoritmos utilizados
 em sua solução.
+
+/*Task1*/
+A funcao chdir() retora:
+    0 em caso de sucesso 
+    -1 em caso de de erro (define errno de acordo com o tipo de erro)
+
+A função da biblioteca C char * strerror (int errnum) procura em uma matriz interna o número do erro errnum e retorna um ponteiro para uma sequência de mensagens de erro.
+
+Para reportar o erro buscou-se utilizar uma estrutura de mensagem semelhante ao do interpretador Bash linux.
+A mensagem a ser exibida tem a seguinte estrutura:
+    myshell: cd: <caminho do diretório> <descrição do erro>
+
+
+/*Task2*/

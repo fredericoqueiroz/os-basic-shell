@@ -77,9 +77,9 @@ runcmd(struct cmd *cmd)
      * TAREFA2: Implemente codigo abaixo para executar
      * comandos simples. */
     
-    /* O execvp() procura pela localização do comando "ecmd->argv[0]" 
+    /* O execvp() procurara pela localização do comando "ecmd->argv[0]" 
     * entre os diretórios especificados na variável de ambiente PATH,
-    * e passa os argumentos contidos no array "ecmd->argv". */
+    * passando os argumentos contidos no array "ecmd->argv". */
     if(execvp(ecmd->argv[0], ecmd->argv) < 0)
       fprintf(stderr, "-myshell: %s: %s\n", ecmd->argv[0], strerror(errno));
     /* MARK END task2 */
@@ -91,7 +91,7 @@ runcmd(struct cmd *cmd)
     /* MARK START task3
      * TAREFA3: Implemente codigo abaixo para executar
      * comando com redirecionamento. */
-    rcmd->fd = open(rcmd->file,rcmd->mode, 0775);
+    rcmd->fd = open(rcmd->file,rcmd->mode, 0777);
     if(cmd->type == '>')
       dup2(rcmd->fd, 1); //STDOUT_FILENO
     else
@@ -105,27 +105,23 @@ runcmd(struct cmd *cmd)
     /* MARK START task4
      * TAREFA4: Implemente codigo abaixo para executar
      * comando com pipes. */
+    // p[0] -> reading     p[1] -> writing
     r = pipe(p);
     if(r < 0){
       perror("pipe");
       exit(0);
     }
-    if(fork1() == 0){
-      /* Processo FILHO */
-      //fprintf(stdout, "Entrou no FILHO\n");
-      // p[0] -> reading   |   p[1] -> writing
+    if(fork1() == 0){ /* Processo FILHO */
       close(p[0]); 
       dup2(p[1], 1);
       runcmd(pcmd->left);
-      //close(p[1]);
+      close(p[1]);
     }
-    else{
-      /* Pocesso PAI */
-      //fprintf(stdout, "Entrou no PAI\n");
+    else{ /* Pocesso PAI */      
       close(p[1]);
       dup2(p[0], 0);
       runcmd(pcmd->right);
-      //close(p[0]);
+      close(p[0]);
     } 
     /* MARK END task4 */
     break;
@@ -138,9 +134,9 @@ getcmd(char *buf, int nbuf)
 {
   if (isatty(fileno(stdin)))
     fprintf(stdout, "$ ");
-  memset(buf, 0, nbuf); // zera o buffer
-  fgets(buf, nbuf, stdin); // le linha do stdin e guarda no buffer
-  if(buf[0] == 0) // EOF
+  memset(buf, 0, nbuf);
+  fgets(buf, nbuf, stdin);
+  if(buf[0] == 0)
     return -1;
   return 0;
 }
@@ -168,7 +164,7 @@ main(void)
     if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       buf[strlen(buf)-1] = 0; // Atribui zero a ultima posicao do buffer
       
-      /* Esse if interno verifica o retorno da funcao chdir(),
+      /* Este if interno verifica o retorno da funcao chdir(),
        * que recebe como parametro o caminho que foi inserido junto com o comando cd
        * A funcao chdir() retora:
        *    0 em caso de sucesso 
@@ -177,7 +173,7 @@ main(void)
 	     * Obs: O chdir altera apenas o diretorio de trabalho do processo, e nao o diretorio de trabalho atual do shell.
       */
       if(chdir(buf+3) < 0)
-		  fprintf(stderr, "-myshell: cd: %s: %s\n", buf+3, strerror(errno));
+		    fprintf(stderr, "myshell: cd: %s: %s\n", buf+3, strerror(errno));
       continue;
     }
     /* MARK END task1 */
