@@ -59,3 +59,7 @@ A mensagem a ser exibida tem a seguinte estrutura:
 
 
 /*Task2*/
+Para executar comandos simples foi utilizada a função execvp().
+Chamada da função: execvp(ecmd->argv[0], ecmd->argv)
+O execvp() procurara pela localização do comando "ecmd->argv[0]" entre os diretórios especificados na variável de ambiente PATH,
+passando os argumentos contidos no array "ecmd->argv".
