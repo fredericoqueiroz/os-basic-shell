@@ -7,18 +7,14 @@ trabalho é de autoria própria.  Exceto pelo material listado no item 3
 deste relatório, os membros do grupo afirmam não ter copiado
 material da Internet nem obtiveram código de terceiros.
 
-2. Membros do grupo e alocação de esforço
 
-Preencha as linhas abaixo com o nome e o e-mail dos integrantes do
-grupo.  Substitua XX pela contribuição de cada membro do grupo no
-desenvolvimento do trabalho.
+2. Membros do grupo e alocação de esforço
 
 Frederico Ribeiro Queiroz <fredqueirozbh@gmail.com> 50%
 Icaro Kened Torres Neto <torres.icaro@hotmail.com> 50%
 
-3. Referências bibliográficas
 
-Adicione aqui as referências bibliográficas.
+3. Referências bibliográficas
 
 /*Task1*/
 https://www.geeksforgeeks.org/chdir-in-c-language-with-examples/
@@ -40,6 +36,8 @@ https://www.quora.com/What-is-the-file-descriptor-What-are-STDIN_FILENO-STDOUT_F
 https://www.geeksforgeeks.org/fork-system-call/
 https://www.geeksforgeeks.org/c-program-demonstrate-fork-and-pipe/
 https://linux.die.net/man/2/pipe
+https://linux.die.net/man/2/close
+https://www.geeksforgeeks.org/fork-system-call/
 
 4. Estruturas de dados
 
@@ -59,7 +57,25 @@ A mensagem a ser exibida tem a seguinte estrutura:
 
 
 /*Task2*/
-Para executar comandos simples foi utilizada a função execvp().
+Para executar comandos simples foi utilizada a função "int execvp(const char *file, char *const argv[])".
 Chamada da função: execvp(ecmd->argv[0], ecmd->argv)
 O execvp() procurara pela localização do comando "ecmd->argv[0]" entre os diretórios especificados na variável de ambiente PATH,
 passando os argumentos contidos no array "ecmd->argv".
+
+
+/*Task3*/
+Para implementar comandos de redirecionamento utilizamos de duas funções:
+
+int open(const char *path, int oflag, int mode, ...): usado para abrir o arquivo para leitura, gravação ou ambos.
+
+int dup2(int oldfd, int newfd): cria uma copia newfd do file descriptor oldfd.
+
+/*Task4*/
+Algoritmos utilizados:
+
+int pipe(int pipefd[2]): cria um canal de dados unidirecional que pode ser utilizado para a comunicação entre processos
+
+int close(int fd): fecha um file descriptor 
+
+int fork1(void) -> fork(): 
+Usada para criar um novo processo (processo filho), que é executado simultaneamente com o processo que faz a chamada (processo pai). 
